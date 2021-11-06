@@ -77,7 +77,6 @@ FROM TEMP_COVERS
 WHERE MOVIE_ID=65;
 
 --13
---TO CHECK
 DECLARE
     m_type VARCHAR2(50);
     img BFILE;
@@ -86,8 +85,8 @@ BEGIN
     select mime_type into m_type FROM TEMP_COVERS WHERE MOVIE_ID=65;
     select image into img FROM TEMP_COVERS WHERE MOVIE_ID=65;
     dbms_lob.createtemporary(a, TRUE);
-    DBMS_LOB.fileopen(img, DBMS_LOB.file_readonly);
-    DBMS_LOB.LOADFROMFILE(img,a,DBMS_LOB.GETLENGTH(img));
+    DBMS_LOB.fileopen(img);
+    DBMS_LOB.LOADFROMFILE(a,img,DBMS_LOB.GETLENGTH(img));
     DBMS_LOB.FILECLOSE(img);
     UPDATE MOVIES
     SET cover = a, MIME_TYPE = m_type
@@ -95,3 +94,10 @@ BEGIN
     dbms_lob.freetemporary(a);
     COMMIT;    
 END;
+
+--14
+select id, dbms_lob.getlength(cover) as filesize from movies where id in (65, 66)
+
+--15
+DROP TABLE MOVIES;
+DROP TABLE TEMP_COVERS;
