@@ -79,16 +79,21 @@ alter type samochod add attribute(w ref wlasciciel) CASCADE INCLUDING TABLE DATA
 drop table wlasiciele;
 create table wlasciciele of wlasciciel;
 
+DELETE FROM SAMOCHODY WHERE 1=1;
+
 ALTER TABLE samochody ADD
 SCOPE FOR(w) is wlasciciele;
 
+INSERT INTO samochody VALUES
+    (NEW samochod('MAZDA', '323', 12000, DATE '2000-09-22', 52000, null))
+;
 
 INSERT ALL
    INTO wlasciciele VALUES (new wlasciciel('JAN', 'KOWALSKI'))
    INTO wlasciciele VALUES (new wlasciciel('ADAM', 'NOWAK'))
 SELECT 1 FROM DUAL;
 
---TODO
+UPDATE SAMOCHODY s SET s.w = (SELECT REF(w) FROM wlasciciele w WHERE imie = 'JAN');
 --6
 set SERVEROUT on;
 DECLARE
