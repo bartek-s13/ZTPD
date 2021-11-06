@@ -69,7 +69,37 @@ select  DBMS_LOB.GETLENGTH(DOKUMENT) from DOKUMENTY;
 DROP TABLE DOKUMENTY;
 
 --13
-CREATE OR REPLACE PROCEDURE  CLOB_CENSOR (text IN OUT clob, to_replace VARCHAR2) IS
+CREATE OR REPLACE PROCEDURE  CLOB_CENSOR (to_change IN OUT clob, to_replace VARCHAR2) IS
+replacement VARCHAR2(250);
 BEGIN
-    
-END;--1
+    replacement := rpad('.',LENGTH(to_replace),'.');
+    WHILE DBMS_LOB.INSTR(to_change, to_replace) > 0
+    LOOP
+        DBMS_LOB.WRITE(to_change, LENGTH(to_replace), DBMS_LOB.INSTR(to_change, to_replace), replacement);
+    END LOOP;    
+END;
+
+--14 
+CREATE TABLE BIOGRAPHIES as SELECT * FROM ZSBD_TOOLS.BIOGRAPHIES;
+
+BEGIN
+    SELECT BIO
+    INTO v_clob
+    FROM BIOGRAPHIES
+    WHERE ID = 1
+    FOR UPDATE;
+    CLOB_CENSOR(v_clob, 'Cimrman');
+END;
+
+DECLARE
+input_text clob ;
+
+BEGIN
+SELECT bio into input_text from BIOGRAPHIES where person='Jara Cimrman' for update;
+CLOB_CENSOR(input_text, 'Cimrman') ;
+END;
+
+SELECT bio from BIOGRAPHIES where person='Jara Cimrman';
+
+--15
+DROP TABLE BIOGRAPHIES;
