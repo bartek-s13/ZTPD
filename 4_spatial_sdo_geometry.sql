@@ -1,0 +1,65 @@
+--1A 
+CREATE TABLE FIGURY (
+    Id NUMBER(1) PRIMARY KEY,
+    KSZTALT MDSYS.SDO_GEOMETRY
+);
+
+--1B
+INSERT INTO FIGURY
+VALUES (
+    1,
+    MDSYS.SDO_GEOMETRY(
+        2003,
+        null,
+        null,
+        MDSYS.SDO_ELEM_INFO_ARRAY(1, 1003, 4),
+        MDSYS.SDO_ORDINATE_ARRAY(5,7, 3,5, 5,3)
+    )
+);
+
+INSERT INTO FIGURY
+VALUES (
+    2,
+    MDSYS.SDO_GEOMETRY(
+        2003,
+        null,
+        null,
+        MDSYS.SDO_ELEM_INFO_ARRAY(1, 1003, 3),
+        MDSYS.SDO_ORDINATE_ARRAY(1,1, 5,5)
+    )
+);
+
+INSERT INTO FIGURY
+VALUES (
+    3,
+    MDSYS.SDO_GEOMETRY(
+        2002,
+        null,
+        null,
+        MDSYS.SDO_ELEM_INFO_ARRAY(1,4,2, 1,2,1, 5,2,2),
+        MDSYS.SDO_ORDINATE_ARRAY(3,2, 6,2, 7,3, 8,2, 7,1)
+    )
+);
+
+--1C
+INSERT INTO FIGURY
+VALUES (
+    4,
+    MDSYS.SDO_GEOMETRY(
+        2003,
+        null,
+        null,
+        MDSYS.SDO_ELEM_INFO_ARRAY(1, 1003, 1),
+        MDSYS.SDO_ORDINATE_ARRAY(1,1, 5,5, 1,5, 5,1)
+    )
+);
+
+--1D
+SELECT id, MDSYS.SDO_GEOM.VALIDATE_GEOMETRY(KSZTALT,0.01) as VALID
+FROM FIGURY;
+
+--1E
+DELETE FROM FIGURY 
+WHERE MDSYS.SDO_GEOM.VALIDATE_GEOMETRY(KSZTALT,0.01) <> 'TRUE';
+--1F
+COMMIT;
