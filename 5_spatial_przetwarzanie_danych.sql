@@ -1,0 +1,77 @@
+--1
+--A
+INSERT INTO USER_SDO_GEOM_METADATA
+VALUES (
+'FIGURY', 'KSZTALT',
+MDSYS.SDO_DIM_ARRAY(
+MDSYS.SDO_DIM_ELEMENT('X', 0, 20, 0.01),
+MDSYS.SDO_DIM_ELEMENT('Y', 0, 20, 0.01) ),
+NULL );
+
+--B
+select sdo_tune.estimate_rtree_index_size(3000000,8192,10,2,0) from FIGURY;
+
+--C
+CREATE INDEX figura_spatial_idx
+ON FIGURY(KSZTALT)
+INDEXTYPE IS MDSYS.SPATIAL_INDEX_V2;
+
+--D
+select ID
+from FIGURY
+where SDO_FILTER(KSZTALT,
+SDO_GEOMETRY(2001,null,
+ SDO_POINT_TYPE(3,3,null),
+ null,null)) = 'TRUE';
+ 
+--Nie
+--SDO_FILTER  daje w wyniku zbiór "kandydatów", dla indeksu r-tree
+
+--E
+select ID
+from FIGURY
+where SDO_RELATE(KSZTALT,
+ SDO_GEOMETRY(2001,null,
+ SDO_POINT_TYPE(3,3,null),
+ null,null),
+ 'mask=ANYINTERACT') = 'TRUE';
+ 
+--Tak
+select GEOM from MAJOR_CITIES WHERE CITY_NAME = 'Warsaw';
+
+--2
+--A
+select A.CITY_NAME, SDO_NN_DISTANCE(1) DISTANCE
+from MAJOR_CITIES A
+where SDO_NN(GEOM,(select GEOM from MAJOR_CITIES WHERE CITY_NAME = 'Warsaw'),
+ 'sdo_num_res=10 unit=km',1) = 'TRUE' and A.CITY_NAME <> 'Warsaw';
+ 
+ --B
+ select C.CITY_NAME
+from MAJOR_CITIES C
+where SDO_WITHIN_DISTANCE(C.GEOM,
+(select GEOM from MAJOR_CITIES WHERE CITY_NAME = 'Warsaw') ,
+ 'distance=100 unit=km') = 'TRUE' and C.CITY_NAME <> 'Warsaw';
+ 
+ --C
+select distinct B.CNTRY_NAME, C.CITY_NAME
+from COUNTRY_BOUNDARIES B, MAJOR_CITIES C
+where B.CNTRY_NAME = 'Slovakia' and SDO_RELATE(B.GEOM, C.GEOM, 'mask=CONTAINS')  = 'TRUE';
+
+--D 
+SELECT 
+    CNTRY_NAME,
+    SDO_GEOM.SDO_DISTANCE(GEOM, (SELECT GEOM FROM COUNTRY_BOUNDARIES WHERE CNTRY_NAME = 'Poland'), 1, 'unit=km')
+FROM COUNTRY_BOUNDARIES 
+WHERE not SDO_RELATE(GEOM,(SELECT GEOM FROM COUNTRY_BOUNDARIES WHERE CNTRY_NAME = 'Poland'), 'mask=EQUAL')  = 'TRUE';
+
+--3
+--A
+select 
+ B.CNTRY_NAME,
+ ROUND(SDO_GEOM.SDO_LENGTH(SDO_GEOM.SDO_INTERSECTION(A.GEOM, B.GEOM, 1), 1, 'unit=km'))
+from COUNTRY_BOUNDARIES A,
+ COUNTRY_BOUNDARIES B
+where A.CNTRY_NAME = 'Poland' AND SDO_RELATE(A.GEOM,B.GEOM, 'mask=TOUCH')  = 'TRUE';
+
+--B
