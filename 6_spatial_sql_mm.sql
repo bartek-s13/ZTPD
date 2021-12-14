@@ -99,13 +99,15 @@ W.name = 'Balaton';
 select B.CNTRY_NAME A_NAME, count(*)
 from   MYST_COUNTRY_BOUNDARIES B, MYST_MAJOR_CITIES C 
 where  SDO_WITHIN_DISTANCE(C.STGEOM, B.STGEOM, 'distance=100 unit=km') = 'TRUE' 
-and    B.CNTRY_NAME = 'Poland'group  by B.CNTRY_NAME;
+and    B.CNTRY_NAME = 'Poland'
+group  by B.CNTRY_NAME;
 
 EXPLAIN PLAN FOR
 select B.CNTRY_NAME A_NAME, count(*)
 from   MYST_COUNTRY_BOUNDARIES B, MYST_MAJOR_CITIES C 
 where  SDO_WITHIN_DISTANCE(C.STGEOM, B.STGEOM, 'distance=100 unit=km') = 'TRUE' 
-and    B.CNTRY_NAME = 'Poland'group  by B.CNTRY_NAME;
+and    B.CNTRY_NAME = 'Poland'
+group  by B.CNTRY_NAME;
 
 
 SELECT PLAN_TABLE_OUTPUT FROM TABLE(DBMS_XPLAN.DISPLAY());
@@ -125,13 +127,15 @@ INDEXTYPE IS MDSYS.SPATIAL_INDEX_V2;
 select B.CNTRY_NAME A_NAME, count(*)
 from   MYST_COUNTRY_BOUNDARIES B, MYST_MAJOR_CITIES C 
 where  SDO_WITHIN_DISTANCE(C.STGEOM, B.STGEOM, 'distance=100 unit=km') = 'TRUE' 
-and    B.CNTRY_NAME = 'Poland'group  by B.CNTRY_NAME;
+and    B.CNTRY_NAME = 'Poland'
+group  by B.CNTRY_NAME;
 
 EXPLAIN PLAN FOR
 select B.CNTRY_NAME A_NAME, count(*)
 from   MYST_COUNTRY_BOUNDARIES B, MYST_MAJOR_CITIES C 
 where  SDO_WITHIN_DISTANCE(C.STGEOM, B.STGEOM, 'distance=100 unit=km') = 'TRUE' 
-and    B.CNTRY_NAME = 'Poland'group  by B.CNTRY_NAME;
+and    B.CNTRY_NAME = 'Poland'
+group  by B.CNTRY_NAME;
 
 SELECT PLAN_TABLE_OUTPUT FROM TABLE(DBMS_XPLAN.DISPLAY());
 
