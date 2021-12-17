@@ -52,10 +52,60 @@ public class Main {
                         " from KursAkcji(spolka='Oracle').win:length(5) ");*/
 
         //30
-        EPDeployment deployment = compileAndDeploy(epRuntime,
+/*        EPDeployment deployment = compileAndDeploy(epRuntime,
                 "select istream data, spolka, kursOtwarcia - min(kursOtwarcia)  as roznica" +
                         " from KursAkcji(spolka='Oracle').win:length(2) " +
-                        " having(kursOtwarcia - min(kursOtwarcia) > 0)");
+                        " having(kursOtwarcia - min(kursOtwarcia) > 0)");*/
+
+
+        //Esper–EPL
+        //5
+/*        EPDeployment deployment = compileAndDeploy(epRuntime,
+                "select istream data, spolka, kursZamkniecia, max(kursZamkniecia) - kursZamkniecia as roznica " +
+                        " from KursAkcji.win:ext_timed_batch(data.getTime(), 1 days)");*/
+
+        //6
+       /* EPDeployment deployment = compileAndDeploy(epRuntime,
+                "select istream data, spolka, kursZamkniecia, max(kursZamkniecia) - kursZamkniecia as roznica " +
+                        " from KursAkcji(spolka in ('IBM', 'Honda', 'Microsoft')).win:ext_timed_batch(data.getTime(), 1 days)");
+*/
+        //7a
+ /*       EPDeployment deployment = compileAndDeploy(epRuntime,
+                "select istream data, spolka, kursOtwarcia, kursZamkniecia " +
+                        " from KursAkcji(kursOtwarcia < kursZamkniecia).std:unique(spolka)");
+*/
+        //7b
+        /*EPDeployment deployment = compileAndDeploy(epRuntime,
+                "select istream data, spolka, kursOtwarcia, kursZamkniecia " +
+                        " from KursAkcji(KursAkcji.roznicaKursow(kursOtwarcia,kursZamkniecia)>0).std:unique(spolka)");
+*/
+        //8
+/*        EPDeployment deployment = compileAndDeploy(epRuntime,
+                "select istream data, spolka, kursZamkniecia, max(kursZamkniecia) - kursZamkniecia as roznica " +
+                        " from KursAkcji(spolka in ('PepsiCo', 'CocaCola')).win:ext_timed(data.getTime(), 7 days)");*/
+
+        //9
+       /* EPDeployment deployment = compileAndDeploy(epRuntime,
+                "select istream data, spolka, kursZamkniecia" +
+                        " from KursAkcji(spolka in ('PepsiCo', 'CocaCola')).win:ext_timed_batch(data.getTime(), 1 days)" +
+                        " having kursZamkniecia = max(kursZamkniecia)");*/
+        //10
+/*        EPDeployment deployment = compileAndDeploy(epRuntime,
+                "select max(kursZamkniecia)" +
+                        " from KursAkcji.win:ext_timed_batch(data.getTime(), 7 days)"
+        );*/
+
+        //11 ???
+        EPDeployment deployment = compileAndDeploy(epRuntime,
+                "select istream kursPep.kursZamkniecia as kursPep, kursPep.data as data, kursCoc.kursZamkniecia as kursCoc" +
+                        " from KursAkcji(spolka='PepsiCo').win:ext_timed(data.getTime(), 1 days) as kursPep, " +
+                        " KursAkcji(spolka='CocaCola').win:ext_timed(data.getTime(), 1 days) as kursCoc " +
+                        " where kursPep.kursZamkniecia > kursCoc.kursZamkniecia");
+
+        //12
+
+
+
 
 
         ProstyListener prostyListener = new ProstyListener();

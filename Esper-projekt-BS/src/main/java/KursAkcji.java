@@ -12,6 +12,8 @@ public class KursAkcji {
 	private Float obrot;
 
 	private static SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+
+	public static Float roznicaKursow(Float ko, Float kz) {return kz-ko;}
 	
 	public KursAkcji(String spolka, String market, Date data,
 			Float kursOtwarcia, Float wartoscMax, Float wartoscMin,
@@ -98,4 +100,6 @@ public class KursAkcji {
 	public void setObrot(Float obrot) {
 		this.obrot = obrot;
 	}
+
+
 }
