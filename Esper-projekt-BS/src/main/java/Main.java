@@ -95,14 +95,52 @@ public class Main {
                         " from KursAkcji.win:ext_timed_batch(data.getTime(), 7 days)"
         );*/
 
-        //11 ???
+        //11
+/*        EPDeployment deployment = compileAndDeploy(epRuntime,
+                "select cc.data, cc.kursZamkniecia as kursCoc, pc.kursZamkniecia as kursPep " +
+                        "from KursAkcji(spolka='CocaCola').win:length(1) as cc  " +
+                        "join KursAkcji(spolka='PepsiCo').win:length(1) as pc " +
+                        "on cc.data = pc.data " +
+                        "where pc.kursZamkniecia > cc.kursZamkniecia");*/
+/*        //12
         EPDeployment deployment = compileAndDeploy(epRuntime,
-                "select istream kursPep.kursZamkniecia as kursPep, kursPep.data as data, kursCoc.kursZamkniecia as kursCoc" +
-                        " from KursAkcji(spolka='PepsiCo').win:ext_timed(data.getTime(), 1 days) as kursPep, " +
-                        " KursAkcji(spolka='CocaCola').win:ext_timed(data.getTime(), 1 days) as kursCoc " +
-                        " where kursPep.kursZamkniecia > kursCoc.kursZamkniecia");
+                "select istream k.data, k.kursZamkniecia, k.kursZamkniecia as kursBiezacy, k.spolka, k.kursZamkniecia - a.kursZamkniecia as roznica" +
+                        " from KursAkcji(spolka in ('PepsiCo', 'CocaCola')).win:length(1) as k " +
+                        " join KursAkcji(spolka in ('PepsiCo', 'CocaCola')).std:firstunique(spolka) as a" +
+                        " where k.spolka = a.spolka ");*/
 
-        //12
+
+        //13
+/*
+        EPDeployment deployment = compileAndDeploy(epRuntime,
+                "select istream k.data, k.kursZamkniecia, k.kursZamkniecia as kursBiezacy, k.spolka, k.kursZamkniecia - a.kursZamkniecia as roznica" +
+                        " from KursAkcji().win:length(1) as k " +
+                        " join KursAkcji().std:firstunique(spolka) as a" +
+                        " where k.spolka = a.spolka " +
+                        " and k.kursZamkniecia > a.kursZamkniecia");
+*/
+
+        //14
+/*        EPDeployment deployment = compileAndDeploy(epRuntime,
+                "select istream a.data as dataA, b.data as dataB, a.spolka, a.kursOtwarcia as kursA, b.kursOtwarcia as kursB" +
+                        " from KursAkcji().win:ext_timed(data.getTime(), 7 days) a " +
+                        " join  KursAkcji().win:ext_timed(data.getTime(), 7 days) b " +
+                        " where a.spolka = b.spolka " +
+                        " and a.kursOtwarcia - b.kursOtwarcia > 3");*/
+        //15
+/*                EPDeployment deployment = compileAndDeploy(epRuntime,
+                "select istream data, spolka, obrot" +
+                        " from KursAkcji(market = 'NYSE').win:ext_timed_batch(data.getTime(), 7 days)  " +
+                        " order by obrot desc " +
+                        " limit 3");*/
+
+        //16
+        EPDeployment deployment = compileAndDeploy(epRuntime,
+                "select istream data, spolka, obrot" +
+                        " from KursAkcji(market = 'NYSE').win:ext_timed_batch(data.getTime(), 7 days)  " +
+                        " order by obrot desc " +
+                        " limit 1 " +
+                        " offset 2");
 
 
 
